@@ -5,8 +5,8 @@ import os
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
-input_dir = os.path.join(BASE_DIR, "dataset") # Pastikan folder 'dataset' ada di root repositori
-save_base_path = os.path.join(BASE_DIR, "hasil_praktikum") # Folder ini akan dibuat di root repositori
+input_dir = os.path.join(BASE_DIR, "dataset") 
+save_base_path = os.path.join(BASE_DIR, "results") 
 
 
 if not os.path.exists(input_dir):
@@ -55,7 +55,7 @@ def apply_shearing_y(image, shear_factor_y):
   transformed_img = cv2.warpAffine(image, matrix_shear_y, (w, int(h + w * shear_factor_y)))
   return transformed_img
 
-def apply_reflection(image, flip_code): # flip_code: 0=vertikal, 1=horizontal, -1=keduanya
+def apply_reflection(image, flip_code): 
   transformed_img = cv2.flip(image, flip_code)
   return transformed_img
 
@@ -81,7 +81,7 @@ for filename in os.listdir(input_dir):
             continue
 
         gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-        tinggi, lebar = gray.shape[:2] # Update for each image
+        tinggi, lebar = gray.shape[:2] 
 
         print(f"\nMemproses gambar: {filename}")
 
@@ -90,55 +90,44 @@ for filename in os.listdir(input_dir):
 
         # 1. Translasi
         hasil_translasi_gray = apply_translation(gray, 50, 30)
-        # show_gray(f"Translasi Grayscale ({filename})", hasil_translasi_gray) # Hapus atau komen untuk non-interaktif
         save_transformed_image(filename, hasil_translasi_gray, "translasi")
 
         # 2. Rotasi
         hasil_rotasi_gray = apply_rotation(gray, 45)
-        # show_gray(f"Rotasi Grayscale ({filename})", hasil_rotasi_gray) # Hapus atau komen untuk non-interaktif
         save_transformed_image(filename, hasil_rotasi_gray, "rotasi")
 
         # 3. Scaling
         hasil_skala_besar_gray = apply_scaling(gray, 1.5, 1.5)
-        # show_gray(f"Skala Besar Grayscale ({filename})", hasil_skala_besar_gray) # Hapus atau komen untuk non-interaktif
         save_transformed_image(filename, hasil_skala_besar_gray, "skala_besar")
 
         hasil_skala_kecil_gray = apply_scaling(gray, 0.5, 0.5)
-        # show_gray(f"Skala Kecil Grayscale ({filename})", hasil_skala_kecil_gray) # Hapus atau komen untuk non-interaktif
         save_transformed_image(filename, hasil_skala_kecil_gray, "skala_kecil")
 
         # 4. Shearing
         hasil_shear_x_gray = apply_shearing_x(gray, 0.3)
-        # show_gray(f"Shearing X Grayscale ({filename})", hasil_shear_x_gray) # Hapus atau komen untuk non-interaktif
         save_transformed_image(filename, hasil_shear_x_gray, "shearing_x")
 
         hasil_shear_y_gray = apply_shearing_y(gray, 0.3)
-        # show_gray(f"Shearing Y Grayscale ({filename})", hasil_shear_y_gray) # Hapus atau komen untuk non-interaktif
         save_transformed_image(filename, hasil_shear_y_gray, "shearing_y")
 
         # 5. Refleksi
         hasil_flip_horizontal_gray = apply_reflection(gray, 1)
-        # show_gray(f"Flip Horizontal Grayscale ({filename})", hasil_flip_horizontal_gray) # Hapus atau komen untuk non-interaktif
         save_transformed_image(filename, hasil_flip_horizontal_gray, "flip_horizontal")
 
         hasil_flip_vertikal_gray = apply_reflection(gray, 0)
-        # show_gray(f"Flip Vertikal Grayscale ({filename})", hasil_flip_vertikal_gray) # Hapus atau komen untuk non-interaktif
         save_transformed_image(filename, hasil_flip_vertikal_gray, "flip_vertikal")
 
         hasil_flip_dua_arah_gray = apply_reflection(gray, -1)
-        # show_gray(f"Flip Dua Arah Grayscale ({filename})", hasil_flip_dua_arah_gray) # Hapus atau komen untuk non-interaktif
         save_transformed_image(filename, hasil_flip_dua_arah_gray, "flip_dua_arah")
 
         # 6. Transformasi Affine
         pts1_affine = np.float32([[50,50], [150,50], [50,150]])
         pts2_affine = np.float32([[10,70], [150,50], [70,170]])
         hasil_affine_gray = apply_affine_transform(gray, pts1_affine, pts2_affine)
-        # show_gray(f"Affine Grayscale ({filename})", hasil_affine_gray) # Hapus atau komen untuk non-interaktif
         save_transformed_image(filename, hasil_affine_gray, "affine")
 
         # 7. Transformasi Proyektif (Perspective Transform)
         pts1_perspektif = np.float32([[50,50], [170,50], [50,170], [170,170]])
         pts2_perspektif = np.float32([[30,70], [190,50], [70,190], [150,150]])
         hasil_perspektif_gray = apply_perspective_transform(gray, pts1_perspektif, pts2_perspektif)
-        # show_gray(f"Perspektif Grayscale ({filename})", hasil_perspektif_gray) # Hapus atau komen untuk non-interaktif
         save_transformed_image(filename, hasil_perspektif_gray, "perspektif")
